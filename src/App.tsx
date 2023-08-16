@@ -1,21 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-
 import './style/global.css';
+
+import Router from './router';
 
 export default function App() {
   return (
     <div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
+      <Router />
     </div>
   );
 }
