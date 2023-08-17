@@ -8,14 +8,6 @@ export default function App() {
   return (
     <div>
       <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
-      <div css={textCss}>emotion css</div>
     </div>
   );
 }
