@@ -1,0 +1,22 @@
+header {
+  background: #f1f1f1;
+  /* padding: 20px 10px; */
+  margin-bottom: 20px;
+}
+
+header nav ul {
+  display: flex;
+}
+
+header nav ul li {
+  /* margin: 0 5px; */
+}
+
+header nav ul li a {
+  display: inline-block;
+  padding: 30px 15px;
+}
+
+header nav ul li a:hover {
+  background: pink;
+}
