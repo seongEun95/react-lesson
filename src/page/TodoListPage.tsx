@@ -58,7 +58,7 @@ export default function TodoListPage() {
           </div>
         </div>
         <div css={footerCss}>
-          <div>text</div>
+          <div>{`You have ${list.length} pending tasks`}</div>
           <button>clear</button>
         </div>
       </div>
@@ -79,12 +79,13 @@ const containerCss = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 300px;
-  padding: 20px 10px;
+  gap: 10px;
+  width: 400px;
+  padding: 20px 15px;
 
   background-color: white;
   border: 1px solid lightgrey;
-  border-radius: 12px;
+  border-radius: 8px;
 `;
 
 const headerCss = css`
@@ -97,13 +98,24 @@ const headerCss = css`
 `;
 
 const bodyCss = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   width: 100%;
 `;
 
-const todoListWrapperCss = css``;
+const todoListWrapperCss = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+`;
 
 const inputWrapperCss = css`
   display: flex;
+  gap: 10px;
   width: 100%;
 `;
 
@@ -112,6 +124,8 @@ const inputCss = css`
 `;
 
 const footerCss = css`
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 `;
