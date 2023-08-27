@@ -4,7 +4,8 @@ import HomePage from './page/HomePage';
 import TodoListPage from './page/TodoListPage';
 import NestingPage from './page/NestingPage';
 import ChildrenPage from './page/ChildrenPage';
-import NotFoundPage from './page/NotFoundPage';
+import NotFoundPage from './page/DraftPage';
+import DraftPage from './page/DraftPage';
 
 export default function Router() {
   return (
@@ -15,6 +16,7 @@ export default function Router() {
         <Route path="/nesting" element={<NestingPage />}>
           <Route path="children/:id" element={<ChildrenPage />} />
         </Route>
+        <Route path="/draft" element={<DraftPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

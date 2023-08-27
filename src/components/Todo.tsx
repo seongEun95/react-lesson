@@ -1,21 +1,75 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
+import Button from './Button';
+import { BsCheck2Circle } from 'react-icons/bs';
+import { RiDeleteBin5Fill } from 'react-icons/ri';
+import { useState } from 'react';
 
 interface TodoProps {
   id: string;
   text: string;
   done: boolean;
+  onClickDone?: React.MouseEventHandler;
+  onClickDelete?: React.MouseEventHandler;
 }
 
-export default function Todo({ id, text, done }: TodoProps) {
+export default function Todo({
+  id,
+  text,
+  done,
+  onClickDone,
+  onClickDelete,
+}: TodoProps) {
+  const [isShow, setIsShow] = useState(false);
+
+  const handleClickTodo = () => {
+    setIsShow(prev => !prev);
+  };
+
   return (
-    <div css={TodoCss}>
-      <div css={textCss}>{text}</div>
-      <div css={buttonWrapperCss}>
-        <button>done</button>
-        <button>delete</button>
-      </div>
+    <div css={TodoCss} onClick={handleClickTodo}>
+      <div css={textCss(done)}>{text}</div>
+      {isShow && (
+        <div css={buttonWrapperCss}>
+          <Button
+            backgroundColor="#0adc06"
+            width="50px"
+            height="50px"
+            onClick={onClickDone}
+          >
+            <BsCheck2Circle size={24} />
+          </Button>
+          <Button
+            backgroundColor="#f0302a"
+            width="50px"
+            height="50px"
+            onClick={onClickDelete}
+          >
+            <RiDeleteBin5Fill size={24} />
+          </Button>
+        </div>
+      )}
+      {/* {isShow ? (
+        <div css={buttonWrapperCss}>
+          <Button
+            backgroundColor="#0adc06"
+            width="50px"
+            height="50px"
+            onClick={onClickDone}
+          >
+            <BsCheck2Circle size={24} />
+          </Button>
+          <Button
+            backgroundColor="#f0302a"
+            width="50px"
+            height="50px"
+            onClick={onClickDelete}
+          >
+            <RiDeleteBin5Fill size={24} />
+          </Button>
+        </div>
+      ) : null} */}
     </div>
   );
 }
@@ -25,15 +79,22 @@ const TodoCss = css`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  height: 50px;
   background-color: #edecec;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.5;
+  }
 `;
 
-const textCss = css`
+const textCss = (done: boolean) => css`
   margin-left: 15px;
   font-size: 18px;
+  text-decoration: ${done ? 'line-through' : 'none'};
 `;
 
 const buttonWrapperCss = css`
   display: flex;
-  gap: 10px;
+  gap: 5px;
 `;
