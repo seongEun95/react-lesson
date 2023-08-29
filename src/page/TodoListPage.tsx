@@ -7,51 +7,67 @@ import { BsFillTrashFill } from 'react-icons/bs';
 import { useState, useEffect } from 'react';
 import { TodoList } from '../types/Todo.type';
 import Todo from '../components/todo';
+import Button from '../components/button';
 
 export default function TodoListPage() {
+  const [userInput, setUserInput] = useState(''); // 유저의 입력 상태
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    setUserInput(e.target.value); // 사용자가 입력한 값으로 상태를 변경한다.
+  };
+
+  // 투두리스트의 목록 배열
   const [list, setList] = useState<TodoList>([
     { id: '1', text: 'react 복습', done: false },
     { id: '2', text: 'react 복습', done: false },
     { id: '3', text: 'react 복습', done: false },
   ]);
 
-  useEffect(() => {
-    // 총 개수의 초기 값
-    setTaskNum(list.length);
-  });
-
-  const [userInput, setUserInput] = useState('');
-
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInput(e.target.value);
-  };
-
-  const handleClickAddBtn = () => {
+  // 투두 추가 함수
+  const addTodo = () => {
+    if (userInput === '') {
+      return;
+    }
     setList(prev => [
       ...prev,
       {
-        id: prev.length === 0 ? '1' : String(+prev[prev.length - 1].id + 1),
+        id: list.length === 0 ? '1' : String(+prev[prev.length - 1].id + 1),
+        // id: String(list.length === 0 ? 1 : +prev[prev.length - 1].id + 1),
         text: userInput,
         done: false,
       },
     ]);
-    setUserInput('');
 
-    // 일단 플러스 버튼을 누르면 배열의 길이 + 1 해서 갯수를 구한다.
-    setTaskNum(list.length + 1);
+    setUserInput(''); // 플러스 버튼을 눌렀을 때 인풋박스 안의 내용 초기화
   };
 
-  const [taskNum, setTaskNum] = useState(0);
+  // 엔터키 눌러도 투두에 추가 함수
+  const handleKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && e.nativeEvent.isComposing === false) {
+      addTodo();
+    } // 엔터키를 눌렀을 때 투두 추가 함수 실행
+  };
 
+  // 완료 함수
+  const handleClickDone = (id: string) => {
+    setList(prev =>
+      prev.map(todo => ({
+        ...todo, // spread 연산자를 사용하여 배열 해체
+        done: todo.id === id ? !todo.done : todo.done, // done은 객체의 id와 파라미터로 받은 id가 같으면 부정연산자로 인해 true 다르면 false
+      })),
+    );
+  };
+
+  // 삭제 함수
+  const handleClickDelete = (id: string) => {
+    // setList 상태 변경 함수 사용하여 prev로 이전 상태를 받아 filter함수로 기존 객체의 id와
+    setList(prev => prev.filter(todo => todo.id !== id));
+  };
+
+  // 초기화 함수
   const handleClickClearBtn = () => {
-    setList([]);
-    setTaskNum(0);
-  };
-
-  const [deleteOn, setDeleteOn] = useState(false);
-
-  const handleClickDeleteBtnOn = () => {
-    deleteOn ? setDeleteOn(false) : setDeleteOn(true);
+    setList([]); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
   };
 
   return (
@@ -64,45 +80,47 @@ export default function TodoListPage() {
             <input
               type="text"
               value={userInput}
-              onInput={handleChangeInput}
+              onChange={handleChangeInput}
+              onKeyDown={handleKeyDownEnter}
               css={inputCss}
               placeholder="Add your new todo"
             />
           </label>
-          <button css={plusBtnCss} onClick={handleClickAddBtn}>
-            <AiOutlinePlus />
-          </button>
+          <Button
+            onClick={addTodo}
+            width="50px"
+            height="50px"
+            backgroundColor="#b873cb"
+          >
+            <AiOutlinePlus size={20} />
+          </Button>
         </div>
 
         {/* 리스트 */}
         <ul css={listWrapCss}>
-          {list.map(({ id, text, done }, i) => (
-            <div key={id} css={todoElemCss} onClick={handleClickDeleteBtnOn}>
-              <Todo id={id} text={text} done={done}></Todo>
-
-              <button
-                css={deleteCss}
-                onClick={() => {
-                  let listcopy = [...list];
-                  listcopy.splice(i, 1);
-                  setList(listcopy);
-
-                  // 버튼을 누르면 총 갯수에서 -1 한다.
-                  setTaskNum(list.length - 1);
-                }}
-              >
-                <BsFillTrashFill />
-              </button>
-            </div>
+          {list.map(({ id, text, done }) => (
+            <Todo
+              key={id}
+              id={id}
+              text={text}
+              done={done}
+              onClickDone={() => handleClickDone(id)}
+              onClickDelete={() => handleClickDelete(id)}
+            ></Todo>
           ))}
         </ul>
 
         {/* 하단 글 갯수, 클리어 버튼 */}
         <div css={clearBtnWrapCss}>
-          <p>You have {taskNum} pending tasks</p>
-          <button css={clearBtnCss} onClick={handleClickClearBtn}>
-            Clear All
-          </button>
+          <p>You have {list.length} pending tasks</p>
+          <Button
+            backgroundColor="#b873cb"
+            width="70px"
+            height="40px"
+            onClick={handleClickClearBtn}
+          >
+            Clear
+          </Button>
         </div>
       </div>
     </div>
@@ -158,42 +176,4 @@ const clearBtnWrapCss = css`
     font-size: 18px;
     color: #333;
   }
-`;
-const plusBtnCss = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  color: #fff;
-  background-color: var(--primary-color);
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-const clearBtnCss = css`
-  padding: 10px;
-  background-color: var(--primary-color);
-  color: #fff;
-`;
-
-const todoElemCss = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-`;
-
-const deleteCss = css`
-  font-size: 20px;
-  background: #db5252;
-  color: #fff;
-  border: none;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  border-radius: 5px;
-  position: absolute;
-  right: 0;
 `;

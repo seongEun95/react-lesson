@@ -4,6 +4,7 @@ import TodoListPage from './page/TodoListPage';
 import NestingPage from './page/NestingPage';
 import ChildrenPage from './page/ChildrenPage';
 import NotFoundPage from './page/NotFoundPage';
+import DraftPage from './page/DraftPage';
 
 export default function Router() {
   return (
@@ -29,6 +30,9 @@ export default function Router() {
             <li>
               <Link to="/nesting/children/3">자식 페이지3</Link>
             </li>
+            <li>
+              <Link to="/draft">초안 페이지</Link>
+            </li>
           </ul>
         </nav>
       </header>
@@ -40,6 +44,7 @@ export default function Router() {
           <Route path="children/:id" element={<ChildrenPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/draft" element={<DraftPage />} />
       </Routes>
     </BrowserRouter>
   );
