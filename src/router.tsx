@@ -5,6 +5,7 @@ import NestingPage from './page/NestingPage';
 import ChildrenPage from './page/ChildrenPage';
 import NotFoundPage from './page/NotFoundPage';
 import DraftPage from './page/DraftPage';
+import ButtonPage from './page/uiChallenge/ButtonPage';
 
 export default function Router() {
   return (
@@ -33,6 +34,9 @@ export default function Router() {
             <li>
               <Link to="/draft">초안 페이지</Link>
             </li>
+            <li>
+              <Link to="/ui">ui challenge</Link>
+            </li>
           </ul>
         </nav>
       </header>
@@ -45,6 +49,7 @@ export default function Router() {
         </Route>
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/draft" element={<DraftPage />} />
+        <Route path="/ui" element={<ButtonPage />} />
       </Routes>
     </BrowserRouter>
   );
