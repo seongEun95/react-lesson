@@ -24,7 +24,7 @@ export default function TodoListPage() {
 
   const [list, setList] = useState<TodoList>([]);
 
-  useEffect(() => {
+  const getData = () => {
     axios
       .get<TodoFromServer[]>(
         'https://jsonplaceholder.typicode.com/todos?_limit=10',
@@ -39,7 +39,41 @@ export default function TodoListPage() {
 
         // console.log(newData);
         setList(newData);
+
+        throw new Error('에러 발생!');
+      })
+      .catch(err => {
+        console.error(err);
+
+        if (err.code === 'ERR_NETWORK')
+          setTimeout(() => {
+            getData();
+          }, 3000);
       });
+  };
+
+  useEffect(() => {
+    getData();
+    // axios
+    //   .get<TodoFromServer[]>(
+    //     'https://jsonplaceholder.typicode.com/todos?_limit=10',
+    //   )
+    //   .then(res => {
+    //     // console.log(res.data);
+    //     const newData = res.data.map(({ id, title, completed }) => ({
+    //       id: String(id),
+    //       text: title,
+    //       done: completed,
+    //     }));
+
+    //     // console.log(newData);
+    //     setList(newData);
+
+    //     throw new Error('네트워크에러 발생!');
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //   });
 
     // fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
     //   .then(res => res.json())
