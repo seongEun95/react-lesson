@@ -1,11 +1,19 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TodoList } from '../types/Todo.type';
 import Todo from '../components/Todo';
 import Button from '../components/Button';
 import { AiOutlinePlus } from 'react-icons/ai';
+import axios from 'axios';
+
+interface TodoFromServer {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+}
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState('');
@@ -14,11 +22,38 @@ export default function TodoListPage() {
     setUserInput(e.target.value);
   };
 
-  const [list, setList] = useState<TodoList>([
-    { id: '1', text: 'react 복습', done: false },
-    { id: '2', text: 'react 복습', done: false },
-    { id: '3', text: 'react 복습', done: false },
-  ]);
+  const [list, setList] = useState<TodoList>([]);
+
+  useEffect(() => {
+    axios
+      .get<TodoFromServer[]>(
+        'https://jsonplaceholder.typicode.com/todos?_limit=10',
+      )
+      .then(res => {
+        // console.log(res.data);
+        const newData = res.data.map(({ id, title, completed }) => ({
+          id: String(id),
+          text: title,
+          done: completed,
+        }));
+
+        // console.log(newData);
+        setList(newData);
+      });
+
+    // fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+    //   .then(res => res.json())
+    //   .then((data: TodoFromServer[]) => {
+    //     // console.log(data);
+    //     const newData = data.map(({ id, title, completed }) => ({
+    //       id: String(id),
+    //       text: title,
+    //       done: completed,
+    //     }));
+    //     // console.log(newData);
+    //     setList(newData);
+    //   });
+  }, []);
 
   const addTodo = () => {
     setList(prev => [
