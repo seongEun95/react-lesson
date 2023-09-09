@@ -79,7 +79,7 @@ const TodoCss = css`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 50px;
+  min-height: 50px;
   background-color: #edecec;
   cursor: pointer;
 
@@ -89,8 +89,12 @@ const TodoCss = css`
 `;
 
 const textCss = (done: boolean) => css`
-  margin-left: 15px;
+  padding: 0px 15px;
   font-size: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
   text-decoration: ${done ? 'line-through' : 'none'};
 `;
 

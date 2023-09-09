@@ -40,7 +40,7 @@ export default function TodoListPage() {
         // console.log(newData);
         setList(newData);
 
-        throw new Error('에러 발생!');
+        // throw new Error('에러 발생!');
       })
       .catch(err => {
         console.error(err);
@@ -222,6 +222,36 @@ const todoListWrapperCss = css`
   align-items: center;
   gap: 10px;
   width: 100%;
+  height: 400px;
+
+  overflow-y: overlay;
+
+  &:hover {
+    ::-webkit-scrollbar-thumb {
+      background-color: lightgrey;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 15px;
+    border: 3px solid white; // 배경색과 같은 색으로 설정
+    min-height: 50px;
+    transition: background-color 0.3s ease;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: lightgrey transparent;
+  }
 `;
 
 const inputWrapperCss = css`
