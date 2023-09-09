@@ -1,18 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import Button from '../components/Button';
-import { RiDeleteBin5Fill } from 'react-icons/ri';
 
 export default function DraftPage() {
-  return (
-    <div css={pageCss}>
-      <Button backgroundColor="red" width="50px" height="50px">
-        <RiDeleteBin5Fill size={24} />
-      </Button>
-      <Button backgroundColor="blue">test</Button>
-    </div>
-  );
+  return <div css={pageCss}></div>;
 }
 
 const pageCss = css`

@@ -1,10 +1,10 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TodoList } from '../types/Todo.type';
-import Todo from '../components/Todo';
-import Button from '../components/Button';
+import Todo from '../components/totoList/Todo';
+import Button from '../components/totoList/Button';
 import { AiOutlinePlus } from 'react-icons/ai';
 import axios from 'axios';
 
@@ -24,7 +24,7 @@ export default function TodoListPage() {
 
   const [list, setList] = useState<TodoList>([]);
 
-  const getData = () => {
+  const getData = useCallback(() => {
     axios
       .get<TodoFromServer[]>(
         'https://jsonplaceholder.typicode.com/todos?_limit=10',
@@ -50,7 +50,7 @@ export default function TodoListPage() {
             getData();
           }, 3000);
       });
-  };
+  }, []);
 
   useEffect(() => {
     getData();
@@ -87,7 +87,7 @@ export default function TodoListPage() {
     //     // console.log(newData);
     //     setList(newData);
     //   });
-  }, []);
+  }, [getData]);
 
   const addTodo = () => {
     setList(prev => [
