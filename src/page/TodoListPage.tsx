@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { TodoList } from '../types/Todo.type';
 import Todo from '../components/todo';
 import Button from '../components/button';
+import axios from 'axios';
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState(''); // 유저의 입력 상태
@@ -18,11 +19,68 @@ export default function TodoListPage() {
   };
 
   // 투두리스트의 목록 배열
-  const [list, setList] = useState<TodoList>([
-    { id: '1', text: 'react 복습', done: false },
-    { id: '2', text: 'react 복습', done: false },
-    { id: '3', text: 'react 복습', done: false },
-  ]);
+  const [list, setList] = useState<TodoList>([]);
+
+  interface TodoFromServer {
+    userId: number;
+    id: number;
+    title: string;
+    completed: boolean;
+  }
+
+  // const getData = () => {
+  //   fetch('https://jsonplaceholder.typicode.com/todos?_limit=5')
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       const newData = data.map(({ id, title, completed }: TodoFromServer) => {
+  //         return {
+  //           id: String(id), // 받아온 데이터의 아이디는 숫자이므로 문자로 형변환
+  //           text: title,
+  //           done: completed,
+  //         };
+  //       });
+  //       setList(newData);
+
+  //       throw new Error('error 발생');
+  //     })
+  //     .catch(err => {
+  //       console.dir(err);
+  //     });
+  // };
+
+  const getData = () => {
+    axios
+      .get<TodoFromServer[]>(
+        'https://jsonplaceholder.typicode.com/todos?_limit=5',
+      )
+      .then(res => {
+        const newData = res.data.map(({ id, title, completed }) => {
+          return {
+            id: String(id),
+            text: title,
+            done: completed,
+          };
+        });
+
+        setList(newData);
+
+        throw new Error('에러발생');
+      })
+      .catch(err => {
+        console.dir(err.code);
+
+        if (err.code === 'ERR_NETWORK') {
+          setTimeout(() => {
+            getData();
+          }, 3000);
+        }
+      });
+  };
+
+  // useEffect , 두 번째 파라미터 빈배열 시 컴포넌트가 처음 렌더링 될 때 실행
+  useEffect(() => {
+    getData();
+  }, []);
 
   // 투두 추가 함수
   const addTodo = () => {
@@ -32,8 +90,8 @@ export default function TodoListPage() {
     setList(prev => [
       ...prev,
       {
-        id: list.length === 0 ? '1' : String(+prev[prev.length - 1].id + 1),
-        // id: String(list.length === 0 ? 1 : +prev[prev.length - 1].id + 1),
+        // id: list.length === 0 ? '1' : String(+prev[prev.length - 1].id + 1),
+        id: String(list.length === 0 ? 1 : +prev[prev.length - 1].id + 1),
         text: userInput,
         done: false,
       },

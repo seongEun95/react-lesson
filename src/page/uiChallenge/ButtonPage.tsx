@@ -12,37 +12,33 @@ export default function ButtonPage() {
   return (
     <div css={buttonWrapCss}>
       {/* primary button */}
-      <ButtonChallenge backgroundColor="#3567d3" onClick={handleConsole}>
+      <ButtonChallenge kind="primary" size="small" onClick={handleConsole}>
         Primary button
       </ButtonChallenge>
 
       {/* Secondary button */}
-      <ButtonChallenge backgroundColor="#484848" onClick={handleConsole}>
+      <ButtonChallenge kind="secondary" size="medium" onClick={handleConsole}>
         Secondary button
       </ButtonChallenge>
 
       {/* Tertiary button */}
-      <ButtonChallenge
-        backgroundColor="#ffffff"
-        color="#3567d3"
-        border="1px solid #3567d3"
-        onClick={handleConsole}
-      >
+      <ButtonChallenge kind="teriary" size="large" onClick={handleConsole}>
         Tertiary button
       </ButtonChallenge>
 
       {/* Danger button */}
-      <ButtonChallenge backgroundColor="#d32c2c" onClick={handleConsole}>
+      <ButtonChallenge kind="danger" size="xlarge" onClick={handleConsole}>
         Danger button
       </ButtonChallenge>
 
       {/* Ghost button */}
-      <ButtonChallenge
-        backgroundColor="#ffffff"
-        color="#3567d3"
-        onClick={handleConsole}
-      >
+      <ButtonChallenge kind="ghost" size="medium" onClick={handleConsole}>
         Ghost button
+      </ButtonChallenge>
+
+      {/* disabled button */}
+      <ButtonChallenge disabled={true} onClick={handleConsole}>
+        disabled
       </ButtonChallenge>
     </div>
   );
