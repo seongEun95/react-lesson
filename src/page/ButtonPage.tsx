@@ -6,6 +6,7 @@ import SubTitle from '../components/common/SubTitle';
 import Column from '../components/common/Column';
 import Row from '../components/common/Row';
 import Title from '../components/common/Title';
+import { columnCss } from '../style/css';
 
 export default function ButtonPage() {
   const handleClickButton = () => {
@@ -18,6 +19,7 @@ export default function ButtonPage() {
         <Title>Button</Title>
         <Row gap={50}>
           <Column align="center" gap={10}>
+            {/* <div css={columnCss('center', 20)}> */}
             <SubTitle>type</SubTitle>
             <Button onClick={handleClickButton}>Primary</Button>
             <Button type="secondary" onClick={handleClickButton}>
@@ -32,6 +34,7 @@ export default function ButtonPage() {
             <Button type="ghost" onClick={handleClickButton}>
               Ghost
             </Button>
+            {/* </div> */}
           </Column>
 
           <Column align="center" gap={10}>
