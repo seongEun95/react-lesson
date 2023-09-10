@@ -1,7 +1,7 @@
-export interface Todo {
+export interface TodoData {
   id: string;
   text: string;
   done: boolean;
 }
 
-export type TodoList = Todo[];
+export type TodoList = TodoData[];

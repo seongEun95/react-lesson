@@ -1,12 +1,21 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { TodoList } from '../types/Todo.type';
-import Todo from '../components/totoList/Todo';
+import React, { useEffect, useState } from 'react';
+import { TodoData } from '../types/Todo.type';
 import Button from '../components/totoList/Button';
 import { AiOutlinePlus } from 'react-icons/ai';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addTodoList,
+  deleteTodo,
+  setList,
+  toggleDone,
+  updateTodo,
+} from '../redux/slice/todoListSlice';
+import { RootState } from '../redux/store';
+import Todo from '../components/totoList/Todo';
 
 interface TodoFromServer {
   userId: number;
@@ -17,88 +26,32 @@ interface TodoFromServer {
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState('');
+  const dispatch = useDispatch();
+  const { list } = useSelector((state: RootState) => state.todoList);
 
   const handleChnageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
   };
 
-  const [list, setList] = useState<TodoList>([]);
-
-  const getData = useCallback(() => {
+  useEffect(() => {
     axios
       .get<TodoFromServer[]>(
         'https://jsonplaceholder.typicode.com/todos?_limit=10',
       )
       .then(res => {
-        // console.log(res.data);
         const newData = res.data.map(({ id, title, completed }) => ({
           id: String(id),
           text: title,
           done: completed,
         }));
 
-        // console.log(newData);
-        setList(newData);
-
-        // throw new Error('에러 발생!');
+        dispatch(setList(newData));
       })
-      .catch(err => {
-        console.error(err);
-
-        if (err.code === 'ERR_NETWORK')
-          setTimeout(() => {
-            getData();
-          }, 3000);
-      });
+      .catch(console.error);
   }, []);
 
-  useEffect(() => {
-    getData();
-    // axios
-    //   .get<TodoFromServer[]>(
-    //     'https://jsonplaceholder.typicode.com/todos?_limit=10',
-    //   )
-    //   .then(res => {
-    //     // console.log(res.data);
-    //     const newData = res.data.map(({ id, title, completed }) => ({
-    //       id: String(id),
-    //       text: title,
-    //       done: completed,
-    //     }));
-
-    //     // console.log(newData);
-    //     setList(newData);
-
-    //     throw new Error('네트워크에러 발생!');
-    //   })
-    //   .catch(err => {
-    //     console.error(err);
-    //   });
-
-    // fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
-    //   .then(res => res.json())
-    //   .then((data: TodoFromServer[]) => {
-    //     // console.log(data);
-    //     const newData = data.map(({ id, title, completed }) => ({
-    //       id: String(id),
-    //       text: title,
-    //       done: completed,
-    //     }));
-    //     // console.log(newData);
-    //     setList(newData);
-    //   });
-  }, [getData]);
-
   const addTodo = () => {
-    setList(prev => [
-      ...prev,
-      {
-        id: String(list.length === 0 ? 1 : +prev[prev.length - 1].id + 1),
-        text: userInput,
-        done: false,
-      },
-    ]);
-
+    dispatch(addTodoList({ text: userInput, done: false }));
     setUserInput('');
   };
 
@@ -107,20 +60,16 @@ export default function TodoListPage() {
   };
 
   const handleClickDelete = (id: string) => {
-    setList(prev => prev.filter(todo => todo.id !== id));
+    dispatch(deleteTodo(id));
   };
 
-  const handleClickDone = (id: string) => {
-    setList(prev =>
-      prev.map(todo => ({
-        ...todo,
-        done: todo.id === id ? !todo.done : todo.done,
-      })),
-    );
+  const handleClickDone = ({ id, text, done }: TodoData) => {
+    dispatch(toggleDone(id));
+    // dispatch(updateTodo({ id, text, done: !done }));
   };
 
   const handleClickClear = () => {
-    setList(() => []);
+    dispatch(setList([]));
   };
 
   console.log(list);
@@ -156,7 +105,7 @@ export default function TodoListPage() {
                 id={id}
                 text={text}
                 done={done}
-                onClickDone={() => handleClickDone(id)}
+                onClickDone={() => handleClickDone({ id, text, done })}
                 onClickDelete={() => handleClickDelete(id)}
               />
             ))}
