@@ -7,6 +7,7 @@ import ChildrenPage from './page/ChildrenPage';
 import NotFoundPage from './page/DraftPage';
 import DraftPage from './page/DraftPage';
 import ButtonPage from './page/ButtonPage';
+import CheckboxPage from './page/CheckboxPage';
 
 export default function Router() {
   return (
@@ -20,6 +21,7 @@ export default function Router() {
 
         <Route path="/uiChallenge" element={<Outlet />}>
           <Route path="button" element={<ButtonPage />} />
+          <Route path="checkbox" element={<CheckboxPage />} />
         </Route>
 
         <Route path="/draft" element={<DraftPage />} />

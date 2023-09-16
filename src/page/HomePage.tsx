@@ -21,17 +21,12 @@ export default function HomePage() {
         move to children 10
       </button> */}
       <SubTitle>Service</SubTitle>
-      <Link to="/service/todoList">
-        <div>TodoList</div>
-      </Link>
+      <Link to="/service/todoList">TodoList</Link>
       <SubTitle>UI Challenge</SubTitle>
-      <Link to="/uiChallenge/button">
-        <div>Button</div>
-      </Link>
+      <Link to="/uiChallenge/button">Button</Link>
+      <Link to="/uiChallenge/checkbox">Checkbox</Link>
       <SubTitle>Practice</SubTitle>
-      <Link to="/draft">
-        <div>Draft</div>
-      </Link>
+      <Link to="/draft">Draft</Link>
     </div>
   );
 }
