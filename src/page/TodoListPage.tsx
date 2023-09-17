@@ -6,8 +6,8 @@ import { AiOutlinePlus } from 'react-icons/ai';
 
 import React, { useState, useEffect } from 'react';
 import { TodoData } from '../types/Todo.type';
-import Todo from '../components/todo';
-import Button from '../components/button';
+import Todo from '../components/todoList/todo';
+import Button from '../components/todoList/button';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';

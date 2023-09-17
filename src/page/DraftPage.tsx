@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import Button from '../components/button';
+import Button from '../components/todoList/button';
 import { BsTrash } from 'react-icons/bs';
 
 export default function DraftPage() {

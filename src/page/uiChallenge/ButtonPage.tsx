@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import ButtonChallenge from '../../components/uiChallComp/buttonChallenge';
+import ButtonChallenge from '../../components/uiChallComp/Button';
 
 export default function ButtonPage() {
   const handleConsole = (e: React.MouseEvent<HTMLButtonElement>) => {
