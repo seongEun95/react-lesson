@@ -2,16 +2,27 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { BsFillTrashFill } from 'react-icons/bs';
+// import { BsFillTrashFill } from 'react-icons/bs';
 
-import { useState, useEffect } from 'react';
-import { TodoList } from '../types/Todo.type';
+import React, { useState, useEffect } from 'react';
+import { TodoData } from '../types/Todo.type';
 import Todo from '../components/todo';
 import Button from '../components/button';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import {
+  setList,
+  updateTodo,
+  deleteTodo,
+  toggleDone,
+  addTodoList,
+} from '../redux/slice/todoListSlice';
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState(''); // 유저의 입력 상태
+  const dispatch = useDispatch();
+  const { list } = useSelector((state: RootState) => state.todoList);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
@@ -19,7 +30,7 @@ export default function TodoListPage() {
   };
 
   // 투두리스트의 목록 배열
-  const [list, setList] = useState<TodoList>([]);
+  // const [list, setList] = useState<TodoList>([]);
 
   interface TodoFromServer {
     userId: number;
@@ -27,26 +38,6 @@ export default function TodoListPage() {
     title: string;
     completed: boolean;
   }
-
-  // const getData = () => {
-  //   fetch('https://jsonplaceholder.typicode.com/todos?_limit=5')
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       const newData = data.map(({ id, title, completed }: TodoFromServer) => {
-  //         return {
-  //           id: String(id), // 받아온 데이터의 아이디는 숫자이므로 문자로 형변환
-  //           text: title,
-  //           done: completed,
-  //         };
-  //       });
-  //       setList(newData);
-
-  //       throw new Error('error 발생');
-  //     })
-  //     .catch(err => {
-  //       console.dir(err);
-  //     });
-  // };
 
   const getData = () => {
     axios
@@ -87,15 +78,7 @@ export default function TodoListPage() {
     if (userInput === '') {
       return;
     }
-    setList(prev => [
-      ...prev,
-      {
-        // id: list.length === 0 ? '1' : String(+prev[prev.length - 1].id + 1),
-        id: String(list.length === 0 ? 1 : +prev[prev.length - 1].id + 1),
-        text: userInput,
-        done: false,
-      },
-    ]);
+    dispatch(addTodoList({ text: userInput, done: false }));
 
     setUserInput(''); // 플러스 버튼을 눌렀을 때 인풋박스 안의 내용 초기화
   };
@@ -108,24 +91,19 @@ export default function TodoListPage() {
   };
 
   // 완료 함수
-  const handleClickDone = (id: string) => {
-    setList(prev =>
-      prev.map(todo => ({
-        ...todo, // spread 연산자를 사용하여 배열 해체
-        done: todo.id === id ? !todo.done : todo.done, // done은 객체의 id와 파라미터로 받은 id가 같으면 부정연산자로 인해 true 다르면 false
-      })),
-    );
+  const handleClickDone = ({ id, text, done }: TodoData) => {
+    dispatch(toggleDone(id));
   };
 
   // 삭제 함수
   const handleClickDelete = (id: string) => {
     // setList 상태 변경 함수 사용하여 prev로 이전 상태를 받아 filter함수로 기존 객체의 id와
-    setList(prev => prev.filter(todo => todo.id !== id));
+    dispatch(deleteTodo(id));
   };
 
   // 초기화 함수
   const handleClickClearBtn = () => {
-    setList([]); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
+    dispatch(setList([])); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
   };
 
   return (
@@ -156,13 +134,13 @@ export default function TodoListPage() {
 
         {/* 리스트 */}
         <ul css={listWrapCss}>
-          {list.map(({ id, text, done }) => (
+          {list.map(({ id, text, done }: TodoData) => (
             <Todo
               key={id}
               id={id}
               text={text}
               done={done}
-              onClickDone={() => handleClickDone(id)}
+              onClickDone={() => handleClickDone({ id, text, done })}
               onClickDelete={() => handleClickDelete(id)}
             ></Todo>
           ))}

@@ -5,7 +5,9 @@ import NestingPage from './page/NestingPage';
 import ChildrenPage from './page/ChildrenPage';
 import NotFoundPage from './page/NotFoundPage';
 import DraftPage from './page/DraftPage';
+import UiChallengePage from './page/uiChallenge/UiChallengePage';
 import ButtonPage from './page/uiChallenge/ButtonPage';
+import CheckBoxPage from './page/uiChallenge/CheckBoxPage';
 
 export default function Router() {
   return (
@@ -49,7 +51,10 @@ export default function Router() {
         </Route>
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/draft" element={<DraftPage />} />
-        <Route path="/ui" element={<ButtonPage />} />
+        <Route path="/ui" element={<UiChallengePage />}>
+          <Route path="button" element={<ButtonPage />} />
+          <Route path="checkbox" element={<CheckBoxPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
