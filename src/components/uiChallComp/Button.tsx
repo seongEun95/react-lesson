@@ -38,7 +38,7 @@ export default function ButtonChallenge({
     </button>
   );
 }
-
+// switch 문을 활용한 버튼 종류 조건부 렌더링 / 풀리퀘스트 테스트 중
 const getCssKind = (kind: ButtonType) => {
   switch (kind) {
     case 'primary':
