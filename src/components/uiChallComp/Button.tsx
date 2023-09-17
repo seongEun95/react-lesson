@@ -80,6 +80,7 @@ const ghostCss = css`
   color: #3567d3;
 `;
 
+// 버튼 사이즈 조건부 렌더링 / 풀리퀘스트 테스트
 const getCssSize = (size: ButtonSize) => {
   switch (size) {
     case 'small':
