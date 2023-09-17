@@ -24,13 +24,12 @@ export default function Checkbox({
   const realId = id || name;
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (disabled) return;
-
-    if (e.key === 'Enter') {
+    if (!disabled && e.key === 'Enter') {
       //@ts-ignore
       e.target.checked = !checked;
       //@ts-ignore
       e.target.name = name;
+      console.dir(e.target);
       onChange(e as any);
     }
   };

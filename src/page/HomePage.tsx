@@ -25,6 +25,7 @@ export default function HomePage() {
       <SubTitle>UI Challenge</SubTitle>
       <Link to="/uiChallenge/button">Button</Link>
       <Link to="/uiChallenge/checkbox">Checkbox</Link>
+      <Link to="/uiChallenge/modal">Modal</Link>
       <SubTitle>Practice</SubTitle>
       <Link to="/draft">Draft</Link>
     </div>

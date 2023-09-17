@@ -16,6 +16,11 @@ import {
 } from '../redux/slice/todoListSlice';
 import { RootState } from '../redux/store';
 import Todo from '../components/totoList/Todo';
+import {
+  setContentModal,
+  setIsShowModal,
+  setOnConfirmModal,
+} from '../redux/slice/layoutSilce';
 
 interface TodoFromServer {
   userId: number;
@@ -69,7 +74,9 @@ export default function TodoListPage() {
   };
 
   const handleClickClear = () => {
-    dispatch(setList([]));
+    dispatch(setOnConfirmModal(() => dispatch(setList([]))));
+    dispatch(setContentModal('정말로 모두 삭제하시겠습니까?'));
+    dispatch(setIsShowModal(true));
   };
 
   console.log(list);

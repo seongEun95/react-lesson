@@ -6,10 +6,30 @@ import SubTitle from '../components/common/SubTitle';
 import Column from '../components/common/Column';
 import Row from '../components/common/Row';
 import Title from '../components/common/Title';
+import { useDispatch } from 'react-redux';
+import {
+  setContentModal,
+  setIsShowModal,
+  setOnConfirmModal,
+} from '../redux/slice/layoutSilce';
+import { useState } from 'react';
 
 export default function ButtonPage() {
+  const dispatch = useDispatch();
+  const [showButton, setShowButton] = useState(false);
+
   const handleClickButton = () => {
     console.log('버튼 클릭!');
+  };
+
+  const handleClickLargeButton = () => {
+    dispatch(
+      setOnConfirmModal(() => {
+        setShowButton(true);
+      }),
+    );
+    dispatch(setContentModal('Button을 더 보시겠습니까?'));
+    dispatch(setIsShowModal(true));
   };
 
   return (
@@ -44,29 +64,31 @@ export default function ButtonPage() {
             <Button size="medium" onClick={handleClickButton}>
               medium
             </Button>
-            <Button size="large" onClick={handleClickButton}>
+            <Button size="large" onClick={handleClickLargeButton}>
               large
             </Button>
           </Column>
 
-          <Column align="center" gap={10}>
-            <SubTitle>disabled</SubTitle>
-            <Button disabled onClick={handleClickButton}>
-              disabled
-            </Button>
-            <Button type="secondary" disabled onClick={handleClickButton}>
-              disabled
-            </Button>
-            <Button type="tertiary" disabled onClick={handleClickButton}>
-              disabled
-            </Button>
-            <Button type="danger" disabled onClick={handleClickButton}>
-              disabled
-            </Button>
-            <Button type="ghost" disabled onClick={handleClickButton}>
-              disabled
-            </Button>
-          </Column>
+          {showButton && (
+            <Column align="center" gap={10}>
+              <SubTitle>disabled</SubTitle>
+              <Button disabled onClick={handleClickButton}>
+                disabled
+              </Button>
+              <Button type="secondary" disabled onClick={handleClickButton}>
+                disabled
+              </Button>
+              <Button type="tertiary" disabled onClick={handleClickButton}>
+                disabled
+              </Button>
+              <Button type="danger" disabled onClick={handleClickButton}>
+                disabled
+              </Button>
+              <Button type="ghost" disabled onClick={handleClickButton}>
+                disabled
+              </Button>
+            </Column>
+          )}
         </Row>
       </Column>
     </div>
