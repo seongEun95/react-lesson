@@ -8,28 +8,44 @@ import Row from '../components/common/Row';
 import Title from '../components/common/Title';
 import { useDispatch } from 'react-redux';
 import {
+  resetModal,
   setContentModal,
   setIsShowModal,
   setOnConfirmModal,
+  setTitleModal,
 } from '../redux/slice/layoutSilce';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ButtonPage() {
   const dispatch = useDispatch();
   const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetModal());
+    };
+  }, []);
 
   const handleClickButton = () => {
     console.log('버튼 클릭!');
   };
 
   const handleClickLargeButton = () => {
-    dispatch(
-      setOnConfirmModal(() => {
-        setShowButton(true);
-      }),
-    );
-    dispatch(setContentModal('Button을 더 보시겠습니까?'));
-    dispatch(setIsShowModal(true));
+    dispatch(setTitleModal('Button'));
+
+    if (showButton) {
+      dispatch(setContentModal('이미 disabled Button을 보고 있습니다.'));
+      dispatch(setIsShowModal(true));
+    } else {
+      dispatch(
+        setOnConfirmModal(() => {
+          setShowButton(true);
+          dispatch(resetModal());
+        }),
+      );
+      dispatch(setContentModal('Button을 더 보시겠습니까?'));
+      dispatch(setIsShowModal(true));
+    }
   };
 
   return (

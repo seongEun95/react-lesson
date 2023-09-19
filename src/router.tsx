@@ -12,11 +12,11 @@ import ModalPage from './page/ModalPage';
 import Modal from './components/uiChallenge/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/store';
-import { setIsShowModal } from './redux/slice/layoutSilce';
+import { resetModal } from './redux/slice/layoutSilce';
 
 export default function Router() {
   const dispatch = useDispatch();
-  const { isShow, content, onConfirm } = useSelector(
+  const { isShow, content, title, onConfirm } = useSelector(
     (state: RootState) => state.layout.modal,
   );
 
@@ -45,9 +45,9 @@ export default function Router() {
 
       <Modal
         isShow={isShow}
-        title="test"
+        title={title}
         onConfirm={onConfirm}
-        onClose={() => dispatch(setIsShowModal(false))}
+        onClose={() => dispatch(resetModal())}
       >
         {content}
       </Modal>

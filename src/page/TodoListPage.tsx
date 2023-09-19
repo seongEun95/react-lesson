@@ -12,14 +12,15 @@ import {
   deleteTodo,
   setList,
   toggleDone,
-  updateTodo,
 } from '../redux/slice/todoListSlice';
 import { RootState } from '../redux/store';
 import Todo from '../components/totoList/Todo';
 import {
+  resetModal,
   setContentModal,
   setIsShowModal,
   setOnConfirmModal,
+  setTitleModal,
 } from '../redux/slice/layoutSilce';
 
 interface TodoFromServer {
@@ -33,6 +34,12 @@ export default function TodoListPage() {
   const [userInput, setUserInput] = useState('');
   const dispatch = useDispatch();
   const { list } = useSelector((state: RootState) => state.todoList);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetModal());
+    };
+  }, []);
 
   const handleChnageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
@@ -74,7 +81,13 @@ export default function TodoListPage() {
   };
 
   const handleClickClear = () => {
-    dispatch(setOnConfirmModal(() => dispatch(setList([]))));
+    dispatch(
+      setOnConfirmModal(() => {
+        dispatch(setList([]));
+        dispatch(resetModal());
+      }),
+    );
+    dispatch(setTitleModal('Todo List'));
     dispatch(setContentModal('정말로 모두 삭제하시겠습니까?'));
     dispatch(setIsShowModal(true));
   };
@@ -178,8 +191,8 @@ const todoListWrapperCss = css`
   align-items: center;
   gap: 10px;
   width: 100%;
-  height: 400px;
-
+  height: fit-content;
+  max-height: 400px;
   overflow-y: overlay;
 
   &:hover {

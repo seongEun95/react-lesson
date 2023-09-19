@@ -4,6 +4,7 @@ interface ModalState {
   modal: {
     isShow: boolean;
     content: any;
+    title: string;
     onConfirm: (() => void) | undefined;
   };
 }
@@ -11,7 +12,8 @@ interface ModalState {
 const initialState: ModalState = {
   modal: {
     isShow: false,
-    content: 'wow',
+    content: '',
+    title: '',
     onConfirm: undefined,
   },
 };
@@ -28,12 +30,27 @@ const modalSlice = createSlice({
       state.modal.content = action.payload;
     },
 
-    setOnConfirmModal(state, action: PayloadAction<() => void>) {
+    setOnConfirmModal(state, action: PayloadAction<(() => void) | undefined>) {
       state.modal.onConfirm = action.payload;
+    },
+
+    setTitleModal(state, action: PayloadAction<string>) {
+      state.modal.title = action.payload;
+    },
+
+    resetModal(state) {
+      state.modal.isShow = false;
+      state.modal.content = '';
+      state.modal.onConfirm = undefined;
     },
   },
 });
 
-export const { setIsShowModal, setContentModal, setOnConfirmModal } =
-  modalSlice.actions;
+export const {
+  setIsShowModal,
+  setContentModal,
+  setTitleModal,
+  setOnConfirmModal,
+  resetModal,
+} = modalSlice.actions;
 export default modalSlice.reducer;

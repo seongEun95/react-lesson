@@ -23,74 +23,88 @@ export default function Modal({
   return (
     <React.Fragment>
       {isShow && (
-        <div css={ModalCss}>
-          <div css={dimCss} onClick={onClose}>
-            <div css={containerCss}>
-              <div css={headerCss}>
-                <span css={modalTitleCss}>{title}</span>
-                <button onClick={onClose}>
-                  <AiOutlineClose size={20} />
-                </button>
-              </div>
-              <div css={bodyCss}>{children}</div>
-              <div css={footerCss}>
-                <Button onClick={onConfirm}>Confirm</Button>
-                <Button type="secondary" onClick={onClose}>
-                  Close
-                </Button>
-              </div>
+        <React.Fragment>
+          <div css={dimCss} onClick={onClose} />
+          <div css={containerCss}>
+            <div css={headerCss}>
+              <span css={modalTitleCss}>{title}</span>
+              <button css={closeButtonCss} onClick={onClose}>
+                <AiOutlineClose size={20} />
+              </button>
+            </div>
+            <div css={bodyCss}>{children}</div>
+            <div css={footerCss}>
+              {onConfirm && <Button onClick={onConfirm}>Confirm</Button>}
+              <Button type="secondary" onClick={onClose}>
+                Close
+              </Button>
             </div>
           </div>
-        </div>
+        </React.Fragment>
       )}
     </React.Fragment>
   );
 }
 
-const ModalCss = css`
+const dimCss = css`
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1000;
-`;
-
-const dimCss = css`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  z-index: 9000;
+  background-color: rgba(0, 0, 0, 0.6);
 `;
 
 const containerCss = css`
-  background-color: white;
-  width: 300px;
-  height: 500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 350px;
+  height: 200px;
+  background-color: white;
   border: 1px solid lightgrey;
+  border-radius: 8px;
+  z-index: 9001;
 `;
 
 const headerCss = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
+  padding: 10px 16px;
   border-bottom: 1px solid lightgrey;
 `;
 
-const modalTitleCss = css``;
+const modalTitleCss = css`
+  font-size: 20px;
+`;
+
+const closeButtonCss = css`
+  padding: 0;
+  background-color: transparent;
+  border: none;
+`;
 
 const bodyCss = css`
-  width: 100%;
   flex: 1;
+  width: 100%;
+  padding: 10px 16px;
 `;
 
 const footerCss = css`
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
   border-top: 1px solid lightgrey;
 `;
