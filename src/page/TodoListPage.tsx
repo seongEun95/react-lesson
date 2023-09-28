@@ -18,6 +18,19 @@ import {
   toggleDone,
   addTodoList,
 } from '../redux/slice/todoListSlice';
+import {
+  confirmModal,
+  contentChangeModal,
+  showModal,
+  titleChangeModal,
+} from '../redux/slice/modalSlice';
+
+interface TodoFromServer {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+}
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState(''); // 유저의 입력 상태
@@ -25,19 +38,11 @@ export default function TodoListPage() {
   const { list } = useSelector((state: RootState) => state.todoList);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
     setUserInput(e.target.value); // 사용자가 입력한 값으로 상태를 변경한다.
   };
 
   // 투두리스트의 목록 배열
   // const [list, setList] = useState<TodoList>([]);
-
-  interface TodoFromServer {
-    userId: number;
-    id: number;
-    title: string;
-    completed: boolean;
-  }
 
   const getData = () => {
     axios
@@ -103,7 +108,15 @@ export default function TodoListPage() {
 
   // 초기화 함수
   const handleClickClearBtn = () => {
-    dispatch(setList([])); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
+    dispatch(
+      confirmModal(() => {
+        dispatch(setList([]));
+        dispatch(showModal(false));
+      }),
+    ); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
+    dispatch(titleChangeModal('정말 삭제?'));
+    dispatch(contentChangeModal('정말 다 삭제하시겠습니까?'));
+    dispatch(showModal(true));
   };
 
   return (
