@@ -8,8 +8,18 @@ import DraftPage from './page/DraftPage';
 import UiChallengePage from './page/uiChallenge/UiChallengePage';
 import ButtonPage from './page/uiChallenge/ButtonPage';
 import CheckBoxPage from './page/uiChallenge/CheckBoxPage';
+import ModalPage from './page/uiChallenge/ModalPage';
+import { Modal } from './components/uiChallComp/Modal';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './redux/store';
+import { showModal } from './redux/slice/modalSlice';
 
 export default function Router() {
+  const dispatch = useDispatch();
+  const { isShow, title, content, onConfirm } = useSelector(
+    (state: RootState) => state.modal.modal,
+  );
+
   return (
     <BrowserRouter>
       <header>
@@ -54,8 +64,18 @@ export default function Router() {
         <Route path="/ui" element={<UiChallengePage />}>
           <Route path="button" element={<ButtonPage />} />
           <Route path="checkbox" element={<CheckBoxPage />} />
+          <Route path="modal" element={<ModalPage />} />
         </Route>
       </Routes>
+
+      <Modal
+        isShow={isShow}
+        modalTitle={title}
+        onConfirm={onConfirm}
+        onClose={() => dispatch(showModal(false))}
+      >
+        {content}
+      </Modal>
     </BrowserRouter>
   );
 }
