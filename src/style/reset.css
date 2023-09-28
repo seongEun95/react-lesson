@@ -138,3 +138,8 @@ body {
 #root {
   height: 100%;
 }
+
+button {
+  background-color: transparent;
+  border: none;
+}
