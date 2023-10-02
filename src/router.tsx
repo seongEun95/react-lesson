@@ -9,10 +9,13 @@ import UiChallengePage from './page/uiChallenge/UiChallengePage';
 import ButtonPage from './page/uiChallenge/ButtonPage';
 import CheckBoxPage from './page/uiChallenge/CheckBoxPage';
 import ModalPage from './page/uiChallenge/ModalPage';
+import HomeworkPage from './page/homework/HomeworkPage';
 import { Modal } from './components/uiChallComp/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { showModal } from './redux/slice/modalSlice';
+import StarbucksPage from './page/homework/StarbucksPage';
+import StarbucksDetailpage from './page/homework/StarbucksDetailPage';
 
 export default function Router() {
   const dispatch = useDispatch();
@@ -49,6 +52,9 @@ export default function Router() {
             <li>
               <Link to="/ui">ui challenge</Link>
             </li>
+            <li>
+              <Link to="/homework">숙제</Link>
+            </li>
           </ul>
         </nav>
       </header>
@@ -65,6 +71,13 @@ export default function Router() {
           <Route path="button" element={<ButtonPage />} />
           <Route path="checkbox" element={<CheckBoxPage />} />
           <Route path="modal" element={<ModalPage />} />
+        </Route>
+        <Route path="/homework" element={<HomeworkPage />}>
+          <Route path="starbucks" element={<StarbucksPage />} />
+          <Route
+            path="starbucksDetail/:drinkId"
+            element={<StarbucksDetailpage />}
+          />
         </Route>
       </Routes>
 
