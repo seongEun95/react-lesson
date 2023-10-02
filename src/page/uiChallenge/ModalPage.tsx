@@ -1,6 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
+import { useEffect } from 'react';
 import ButtonChallenge from '../../components/uiChallComp/Button';
 import { useDispatch } from 'react-redux';
 import {
@@ -11,6 +12,12 @@ import {
 
 export default function ModalPage() {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(showModal(false));
+    };
+  }, []);
 
   const handleClickButton = () => {
     dispatch(showModal(true));
