@@ -76,6 +76,11 @@ export default function TodoListPage() {
   // useEffect , 두 번째 파라미터 빈배열 시 컴포넌트가 처음 렌더링 될 때 실행
   useEffect(() => {
     getData();
+
+    return () => {
+      // unmount 시,컴포넌트가 사라질 때 실행
+      dispatch(showModal(false));
+    };
   }, []);
 
   // 투두 추가 함수
