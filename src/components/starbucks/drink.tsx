@@ -1,10 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import { DrinkProps } from '../../page/homework/StarbucksPage';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+export interface DrinkProps {
+  id: number;
+  productNameKO: string;
+  url: string;
+  isNew: string;
+}
 
 export default function Drink({ id, productNameKO, url, isNew }: DrinkProps) {
   const [like, setLike] = useState(false); // 좋아요 버튼 상태
@@ -14,8 +20,8 @@ export default function Drink({ id, productNameKO, url, isNew }: DrinkProps) {
   };
 
   return (
-    <li css={drinkListCss} key={id}>
-      <div css={likeBtnWrapCss} onClick={handleLikeClickToggle}>
+    <li css={drinkListCss}>
+      <div css={likeBtnWrapCss} onClick={() => handleLikeClickToggle()}>
         {like ? ( // 좋아요(하트) 버튼
           <AiFillHeart css={filledHeartCss} size={30} />
         ) : (
@@ -28,9 +34,9 @@ export default function Drink({ id, productNameKO, url, isNew }: DrinkProps) {
         <div css={drinkImgWrapCss}>
           <img css={drinkImgCss} src={url} alt={productNameKO} />
 
-          {isNew === 'Y' ? ( // 새로운 음료라면 new 이미지 생성
+          {isNew === 'Y' && ( // 새로운 음료라면 new 이미지 생성
             <img css={newMarkCss} src="../../../new_mark.png" alt="new" />
-          ) : null}
+          )}
         </div>
         <p css={productNameCss}>{productNameKO}</p>
       </Link>
@@ -53,6 +59,7 @@ const drinkImgCss = css`
   width: 100%;
   max-width: 300px;
   transition: 0.3s;
+
   &:hover {
     transform: scale(1.08);
   }
