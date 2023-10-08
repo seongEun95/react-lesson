@@ -16,12 +16,12 @@ export default function Drink({ id, productNameKO, url, isNew }: DrinkProps) {
   const [like, setLike] = useState(false); // 좋아요 버튼 상태
 
   const handleLikeClickToggle = () => {
-    setLike(!like); // 기존 false를 true
+    setLike(prev => !prev); // 기존 false를 true, 10.08. 콜백함수 사용
   };
 
   return (
     <li css={drinkListCss}>
-      <div css={likeBtnWrapCss} onClick={() => handleLikeClickToggle()}>
+      <div css={likeBtnWrapCss} onClick={handleLikeClickToggle}>
         {like ? ( // 좋아요(하트) 버튼
           <AiFillHeart css={filledHeartCss} size={30} />
         ) : (
