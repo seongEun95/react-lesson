@@ -2,11 +2,11 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import Drink from '../../components/starbucks/Drink';
+import Drink, { DrinkProps } from '../../components/starbucks/Drink';
 import mq from '../../style/mediaQuery';
 
 export default function StarbucksPage() {
-  const [drinkList, setDrinkList] = useState([]); // 데이터 빈 배열 상태
+  const [drinkList, setDrinkList] = useState<DrinkProps[]>([]); // 데이터 빈 배열 상태, 10.08. state 정의 시 타입 설정
   const [loading, setLoading] = useState(true); // 데이터 불러올 때 로딩 중 상태
 
   useEffect(() => {
@@ -41,17 +41,15 @@ export default function StarbucksPage() {
 
       {/* 음료 리스트 영역 */}
       <ul css={drinkListWrapCss}>
-        {drinkList.map(({ id, productNameKO, url, isNew }) => {
-          return (
-            <Drink
-              key={id}
-              id={id}
-              productNameKO={productNameKO}
-              url={url}
-              isNew={isNew}
-            />
-          );
-        })}
+        {drinkList.map(({ id, productNameKO, url, isNew }) => (
+          <Drink
+            key={id}
+            id={id}
+            productNameKO={productNameKO}
+            url={url}
+            isNew={isNew}
+          />
+        ))}
       </ul>
     </div>
   );
