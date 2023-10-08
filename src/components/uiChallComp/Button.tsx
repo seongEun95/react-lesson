@@ -113,14 +113,15 @@ const xlargeCss = css`
 const commonCss = () => css`
   display: flex;
   align-items: center;
-  padding-left: 20px !important;
+  justify-content: center;
   box-sizing: border-box;
-  width: 220px;
+  max-width: 220px;
+  width: 100%;
   font-size: 18px;
   border: none;
   cursor: pointer;
   &:hover {
-    opacity: 0.5;
+    opacity: 0.8;
   }
 
   &:disabled {

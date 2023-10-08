@@ -2,8 +2,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 
-import { Link } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 export default function UiChallengePage() {
   return (
@@ -14,6 +13,7 @@ export default function UiChallengePage() {
           <li css={list}>
             <Link to="/ui/button">버튼</Link>
             <Link to="/ui/checkbox">체크박스</Link>
+            <Link to="/ui/modal">모달창</Link>
           </li>
         </ul>
       </div>
