@@ -14,6 +14,8 @@ export default function UiChallengePage() {
             <Link to="/ui/button">버튼</Link>
             <Link to="/ui/checkbox">체크박스</Link>
             <Link to="/ui/modal">모달창</Link>
+            <Link to="/ui/dropdown">드랍다운</Link>
+            <Link to="/ui/login">로그인</Link>
           </li>
         </ul>
       </div>
