@@ -12,7 +12,7 @@ interface InputProps {
   message?: string;
   inputError: boolean;
   handleKeyDown: (e: any) => void;
-  handleInputValueEvent: (e: any) => void;
+  handleGetValue: (e: any) => void;
 }
 
 export default function Input({
@@ -23,7 +23,7 @@ export default function Input({
   message,
   inputError,
   handleKeyDown,
-  handleInputValueEvent,
+  handleGetValue,
 }: InputProps) {
   return (
     <div css={inputWrapCss}>
@@ -36,9 +36,9 @@ export default function Input({
         id={id}
         placeholder={placeHolder}
         onKeyDown={handleKeyDown}
-        onChange={handleInputValueEvent}
+        onChange={handleGetValue}
       />
-      <p>{message}</p>
+      {message !== '' && <p>{message}</p>}
     </div>
   );
 }

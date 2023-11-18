@@ -69,13 +69,7 @@ export default function LoginPage() {
 
   return (
     <div>
-      <form
-        css={loginWrapCss}
-        onSubmit={event => {
-          // 폼태그 동작 막기
-          event?.preventDefault();
-        }}
-      >
+      <div css={loginWrapCss}>
         <h1 css={loginTitleCss}>login</h1>
         <div>
           <Input
@@ -86,7 +80,7 @@ export default function LoginPage() {
             message={idMessage}
             inputError={idError}
             handleKeyDown={handleKeyDownEnter}
-            handleInputValueEvent={handleIdValue}
+            handleGetValue={handleIdValue}
           />
           <Input
             id="password_id"
@@ -96,7 +90,7 @@ export default function LoginPage() {
             message={pwMessage}
             inputError={pwError}
             handleKeyDown={handleKeyDownEnter}
-            handleInputValueEvent={handlePwValue}
+            handleGetValue={handlePwValue}
           />
           <div>
             <ButtonChallenge onClick={handleSubmit} size="small">
@@ -104,7 +98,7 @@ export default function LoginPage() {
             </ButtonChallenge>
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
