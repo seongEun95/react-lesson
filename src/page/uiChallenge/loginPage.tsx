@@ -7,45 +7,89 @@ import { useState, ChangeEvent, useEffect } from 'react';
 
 export default function LoginPage() {
   // id값과 비밀번호값의 상태
-  const [idValue, setIdValue] = useState<string>('');
-  const [pwValue, setPwValue] = useState<string>('');
+  // const [idValue, setIdValue] = useState<string>('');
+  // const [pwValue, setPwValue] = useState<string>('');
 
   // 조건에 따라 변경되는 메시지 상태
-  const [idMessage, setIdMessage] = useState<string>('');
-  const [pwMessage, setPwMessage] = useState<string>('');
+  // const [idMessage, setIdMessage] = useState<string>('');
+  // const [pwMessage, setPwMessage] = useState<string>('');
 
   // id와 비밀번호 조건에 따라 인풋 스타일 상태
-  const [idError, setIdError] = useState(false);
-  const [pwError, setPwError] = useState(false);
+  // const [idError, setIdError] = useState(false);
+  // const [pwError, setPwError] = useState(false);
+
+  const [userInput, setUserInput] = useState({
+    id: { value: '', message: '', isError: false },
+    pw: { value: '', message: '', isError: false },
+  });
 
   useEffect(() => {
-    if (idValue.length < 5 && idValue.length >= 1) {
-      setIdMessage('아이디 5자 이상 작성해주세요');
-      setIdError(true);
+    if (userInput.id.value.length < 5 && userInput.id.value.length >= 1) {
+      setUserInput(prev => ({
+        ...prev,
+        id: {
+          value: userInput.id.value,
+          message: '아이디를 5글자 이상 작성해주세요',
+          isError: true,
+        },
+      }));
     } else {
-      setIdMessage('');
-      setIdError(false);
+      setUserInput(prev => ({
+        ...prev,
+        id: {
+          value: userInput.id.value,
+          message: '',
+          isError: false,
+        },
+      }));
     }
-  }, [idValue]);
+  }, [userInput.id.value]);
 
   useEffect(() => {
-    if (pwValue.length < 5 && pwValue.length >= 1) {
-      setPwMessage('비밀번호 5자 이상 작성해주세요');
-      setPwError(true);
+    if (userInput.pw.value.length < 5 && userInput.pw.value.length >= 1) {
+      setUserInput(prev => ({
+        ...prev,
+        pw: {
+          value: userInput.pw.value,
+          message: '비밀번호를 5글자 이상 작성해주세요',
+          isError: true,
+        },
+      }));
     } else {
-      setPwMessage('');
-      setPwError(false);
+      setUserInput(prev => ({
+        ...prev,
+        pw: {
+          value: userInput.pw.value,
+          message: '',
+          isError: false,
+        },
+      }));
     }
-  }, [pwValue]);
+  }, [userInput.pw.value]);
 
   // id값 체크
   const handleIdValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setIdValue(e.target.value);
+    setUserInput(prev => ({
+      ...prev,
+      id: {
+        isError: userInput.id.isError, // 알수없음
+        message: userInput.id.message,
+        value: e.target.value,
+      },
+    }));
   };
+  console.log(userInput);
 
   // 비밀번호 체크
   const handlePwValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setPwValue(e.target.value);
+    setUserInput(prev => ({
+      ...prev,
+      pw: {
+        isError: prev.pw.isError,
+        message: prev.pw.message,
+        value: e.target.value,
+      },
+    }));
   };
 
   // 엔터키 누르면 실행, Form 태그로 실행이 되지만 별도의 키다운 이벤트 함수 제작, isComposing === false로 해야 한글(조합문자 체크)오류를 방지할 수 있다.
@@ -57,10 +101,10 @@ export default function LoginPage() {
   };
 
   const handleSubmit = () => {
-    if (idValue.length >= 5 && pwValue.length >= 5) {
+    if (userInput.id.value.length >= 5 && userInput.pw.value.length >= 5) {
       console.log({
-        Id: idValue,
-        Password: pwValue,
+        id: userInput.id.value,
+        pw: userInput.pw.value,
       });
     } else {
       console.log('조건 부적합');
@@ -77,8 +121,8 @@ export default function LoginPage() {
             label="아이디"
             type="text"
             placeHolder="아이디를 입력하세요"
-            message={idMessage}
-            inputError={idError}
+            message={userInput.id.message}
+            inputError={userInput.id.isError}
             handleKeyDown={handleKeyDownEnter}
             handleGetValue={handleIdValue}
           />
@@ -87,8 +131,8 @@ export default function LoginPage() {
             label="비밀번호"
             type="password"
             placeHolder="비밀번호를 입력하세요"
-            message={pwMessage}
-            inputError={pwError}
+            message={userInput.pw.message}
+            inputError={userInput.pw.isError}
             handleKeyDown={handleKeyDownEnter}
             handleGetValue={handlePwValue}
           />
