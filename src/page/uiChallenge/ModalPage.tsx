@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { useEffect } from 'react';
-import ButtonChallenge from '../../components/uiChallComp/Button';
+import ButtonChallenge from '../../components/uiChallenge/Button';
 import { useDispatch } from 'react-redux';
 import {
   contentChangeModal,

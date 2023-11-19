@@ -10,7 +10,7 @@ import ButtonPage from './page/uiChallenge/ButtonPage';
 import CheckBoxPage from './page/uiChallenge/CheckBoxPage';
 import ModalPage from './page/uiChallenge/ModalPage';
 import HomeworkPage from './page/homework/HomeworkPage';
-import { Modal } from './components/uiChallComp/Modal';
+import { Modal } from './components/uiChallenge/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { showModal } from './redux/slice/modalSlice';

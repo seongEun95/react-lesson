@@ -1,8 +1,8 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import ButtonChallenge from '../../components/uiChallComp/Button';
-import Input from '../../components/uiChallComp/Input';
+import ButtonChallenge from '../../components/uiChallenge/Button';
+import Input from '../../components/uiChallenge/Input';
 import { useState, ChangeEvent, useEffect } from 'react';
 
 export default function LoginPage() {
