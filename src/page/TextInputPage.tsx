@@ -28,18 +28,6 @@ export default function TextInputPage() {
   const hnadleClickLogin = () => {
     console.log(id.value, pw.value);
 
-    if (id.value === '')
-      return serUserInput(prev => ({
-        ...prev,
-        id: { ...prev.id, description: '아이디를 입력해주세요' },
-      }));
-
-    if (pw.value === '')
-      return serUserInput(prev => ({
-        ...prev,
-        pw: { ...prev.pw, description: '비밀번호를 입력해주세요' },
-      }));
-
     if (rEmail.test(id.value) === false)
       return serUserInput(prev => ({
         ...prev,
@@ -56,7 +44,7 @@ export default function TextInputPage() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (id.value && pw.value && e.key === 'Enter') {
       hnadleClickLogin();
     }
   };
@@ -99,7 +87,12 @@ export default function TextInputPage() {
               />
             </Column>
 
-            <Button onClick={hnadleClickLogin}>로그인</Button>
+            <Button
+              disabled={!id.value || !pw.value}
+              onClick={hnadleClickLogin}
+            >
+              로그인
+            </Button>
           </Column>
         </div>
       </Column>
@@ -124,7 +117,6 @@ const containerCss = css`
   width: 400px;
   height: 350px;
   border-radius: 8px;
-
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 `;
 
