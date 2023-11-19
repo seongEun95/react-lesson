@@ -13,6 +13,7 @@ import Modal from './components/uiChallenge/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { resetModal } from './redux/slice/layoutSilce';
+import TextInputPage from './page/TextInputPage';
 
 export default function Router() {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ export default function Router() {
           <Route path="button" element={<ButtonPage />} />
           <Route path="checkbox" element={<CheckboxPage />} />
           <Route path="modal" element={<ModalPage />} />
+          <Route path="textInput" element={<TextInputPage />} />
         </Route>
 
         <Route path="/draft" element={<DraftPage />} />
