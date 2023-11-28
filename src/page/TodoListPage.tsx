@@ -2,7 +2,7 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
-import { TodoData } from '../types/Todo.type';
+import { TodoData, TodoList } from '../types/Todo.type';
 import Button from '../components/totoList/Button';
 import { AiOutlinePlus } from 'react-icons/ai';
 import axios from 'axios';
@@ -12,6 +12,7 @@ import {
   deleteTodo,
   setList,
   toggleDone,
+  updateTodo,
 } from '../redux/slice/todoListSlice';
 import { RootState } from '../redux/store';
 import Todo from '../components/totoList/Todo';
@@ -23,12 +24,12 @@ import {
   setTitleModal,
 } from '../redux/slice/layoutSilce';
 
-interface TodoFromServer {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
+// interface TodoFromServer {
+//   userId: number;
+//   id: number;
+//   title: string;
+//   completed: boolean;
+// }
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState('');
@@ -47,52 +48,95 @@ export default function TodoListPage() {
 
   useEffect(() => {
     axios
-      .get<TodoFromServer[]>(
-        'https://jsonplaceholder.typicode.com/todos?_limit=10',
+      .get<{ message: string; result: TodoList }>(
+        'http://localhost:8000/todo',
+        // 'https://jsonplaceholder.typicode.com/todos?_limit=j',
       )
       .then(res => {
-        const newData = res.data.map(({ id, title, completed }) => ({
-          id: String(id),
-          text: title,
-          done: completed,
-        }));
+        if ((res.data.message = 'SUCCESS')) {
+          const newData = res.data.result.map(
+            ({ id, text, done, created_at }) => ({
+              id: String(id),
+              text,
+              done,
+              created_at: new Date(created_at),
+            }),
+          );
 
-        dispatch(setList(newData));
+          dispatch(setList(newData));
+        }
       })
       .catch(console.error);
   }, []);
 
   const addTodo = () => {
-    dispatch(addTodoList({ text: userInput, done: false }));
-    setUserInput('');
+    const body = { text: userInput };
+
+    axios
+      .post<{ message: string; result: TodoData }>(
+        'http://localhost:8000/todo',
+        body,
+      )
+      .then(res => {
+        if (res.data.message === 'SUCCESS') {
+          dispatch(addTodoList(res.data.result));
+          setUserInput('');
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const handleKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.code === 'Enter') addTodo();
+    if (e.code === 'Enter' && e.nativeEvent.isComposing === false) {
+      addTodo();
+    }
   };
 
   const handleClickDelete = (id: string) => {
-    dispatch(deleteTodo(id));
+    axios
+      .delete<{ message: string }>(`http://localhost:8000/todo/${id}`)
+      .then(res => {
+        if (res.data.message === 'SUCCESS') {
+          dispatch(deleteTodo(id));
+        }
+      })
+      .catch(err => console.error(err));
   };
 
-  const handleClickDone = ({ id, text, done }: TodoData) => {
-    dispatch(toggleDone(id));
-    // dispatch(updateTodo({ id, text, done: !done }));
+  const handleClickDone = ({ id, text, done, created_at }: TodoData) => {
+    axios
+      .patch<{ message: string; result: TodoData }>(
+        `http://localhost:8000/todo/${id}`,
+        { done: !done },
+      )
+      .then(res => {
+        if ((res.data.message = 'SUCCESS')) {
+          dispatch(updateTodo({ id, text, done: !done, created_at }));
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const handleClickClear = () => {
     dispatch(
       setOnConfirmModal(() => {
-        dispatch(setList([]));
-        dispatch(resetModal());
+        axios
+          .delete<{ message: string }>('http://localhost:8000/todo/all')
+          .then(res => {
+            if (res.data.message === 'SUCCESS') {
+              dispatch(setList([]));
+            }
+          })
+          .catch(err => console.error(err))
+          .finally(() => {
+            dispatch(resetModal());
+          });
       }),
     );
     dispatch(setTitleModal('Todo List'));
     dispatch(setContentModal('정말로 모두 삭제하시겠습니까?'));
     dispatch(setIsShowModal(true));
   };
-
-  console.log(list);
 
   return (
     <div css={TodoListCss}>
