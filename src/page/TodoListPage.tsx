@@ -2,10 +2,8 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { AiOutlinePlus } from 'react-icons/ai';
-// import { BsFillTrashFill } from 'react-icons/bs';
-
 import React, { useState, useEffect } from 'react';
-import { TodoData } from '../types/Todo.type';
+import { TodoData, TodoList } from '../types/Todo.type';
 import Todo from '../components/todoList/todo';
 import Button from '../components/todoList/button';
 import axios from 'axios';
@@ -23,14 +21,15 @@ import {
   contentChangeModal,
   showModal,
   titleChangeModal,
+  resetModal,
 } from '../redux/slice/modalSlice';
 
-interface TodoFromServer {
-  userId: number;
-  id: number;
-  title: string;
-  completed: boolean;
-}
+// interface TodoFromServer {
+//   userId: number;
+//   id: number;
+//   title: string;
+//   completed: boolean;
+// }
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState(''); // 유저의 입력 상태
@@ -41,26 +40,23 @@ export default function TodoListPage() {
     setUserInput(e.target.value); // 사용자가 입력한 값으로 상태를 변경한다.
   };
 
-  // 투두리스트의 목록 배열
-  // const [list, setList] = useState<TodoList>([]);
-
   const getData = () => {
     axios
-      .get<TodoFromServer[]>(
-        'https://jsonplaceholder.typicode.com/todos?_limit=5',
-      )
+      .get<{ message: string; result: TodoList }>('/todo')
       .then(res => {
-        const newData = res.data.map(({ id, title, completed }) => {
-          return {
-            id: String(id),
-            text: title,
-            done: completed,
-          };
-        });
-
-        setList(newData);
-
-        throw new Error('에러발생');
+        if (res.data.message === 'SUCCESS') {
+          const newData = res.data.result.map(
+            ({ id, text, done, created_at }) => {
+              return {
+                id: String(id),
+                text,
+                done,
+                created_at: new Date(created_at),
+              };
+            },
+          );
+          dispatch(setList(newData));
+        }
       })
       .catch(err => {
         console.dir(err.code);
@@ -78,7 +74,7 @@ export default function TodoListPage() {
     getData();
 
     return () => {
-      // unmount 시,컴포넌트가 사라질 때 실행
+      // unmount 시,컴포넌트가 사라질 때 실행, 페이지 전환 시 모달 안 보이도록
       dispatch(showModal(false));
     };
   }, []);
@@ -88,9 +84,20 @@ export default function TodoListPage() {
     if (userInput === '') {
       return;
     }
-    dispatch(addTodoList({ text: userInput, done: false }));
 
-    setUserInput(''); // 플러스 버튼을 눌렀을 때 인풋박스 안의 내용 초기화
+    const body = { text: userInput };
+
+    axios //
+      .post<{ message: string; result: TodoData }>('/todo', body)
+      .then(res => {
+        if (res.data.message === 'SUCCESS') {
+          dispatch(addTodoList(res.data.result));
+          setUserInput(''); // 플러스 버튼을 눌렀을 때 인풋박스 안의 내용 초기화
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
   };
 
   // 엔터키 눌러도 투두에 추가 함수
@@ -101,24 +108,56 @@ export default function TodoListPage() {
   };
 
   // 완료 함수
-  const handleClickDone = ({ id, text, done }: TodoData) => {
-    dispatch(toggleDone(id));
+  const handleClickDone = ({ id, text, done, created_at }: TodoData) => {
+    axios //
+      .patch<{ message: string; result: TodoData }>(`/todo/${id}`, {
+        done: !done,
+      })
+      .then(res => {
+        if (res.data.message === 'SUCCESS') {
+          dispatch(updateTodo({ id, text, done: !done, created_at }));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
   };
 
   // 삭제 함수
   const handleClickDelete = (id: string) => {
-    // setList 상태 변경 함수 사용하여 prev로 이전 상태를 받아 filter함수로 기존 객체의 id와
-    dispatch(deleteTodo(id));
+    axios //
+      .delete<{ message: string; result: TodoData }>(`/todo/${id}`)
+      .then(res => {
+        if (res.data.message === 'SUCCESS') {
+          dispatch(deleteTodo(id));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
   };
 
   // 초기화 함수
   const handleClickClearBtn = () => {
-    dispatch(
-      confirmModal(() => {
-        dispatch(setList([]));
-        dispatch(showModal(false));
-      }),
-    ); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
+    axios //
+      .delete<{ message: string }>('/todo/all')
+      .then(res => {
+        if (res.data.message === 'SUCCESS') {
+          dispatch(
+            confirmModal(() => {
+              dispatch(setList([]));
+              dispatch(showModal(false));
+            }),
+          ); // 초기화 버튼을 눌렀을 때 리스트의 상태는 빈배열로 상태 변경
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      })
+      .finally(() => {
+        // dispatch(resetModal()); // 23.12.02 켜지자마자 종료되는 에러 발생
+      });
+
     dispatch(titleChangeModal('정말 삭제?'));
     dispatch(contentChangeModal('정말 다 삭제하시겠습니까?'));
     dispatch(showModal(true));
@@ -152,13 +191,15 @@ export default function TodoListPage() {
 
         {/* 리스트 */}
         <ul css={listWrapCss}>
-          {list.map(({ id, text, done }: TodoData) => (
+          {list.map(({ id, text, done, created_at }: TodoData) => (
             <Todo
               key={id}
               id={id}
               text={text}
               done={done}
-              onClickDone={() => handleClickDone({ id, text, done })}
+              onClickDone={() =>
+                handleClickDone({ id, text, done, created_at })
+              }
               onClickDelete={() => handleClickDelete(id)}
             ></Todo>
           ))}
