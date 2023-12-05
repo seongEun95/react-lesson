@@ -23,6 +23,7 @@ import {
   setOnConfirmModal,
   setTitleModal,
 } from '../redux/slice/layoutSilce';
+import { useNavigate } from 'react-router-dom';
 
 // interface TodoFromServer {
 //   userId: number;
@@ -33,6 +34,8 @@ import {
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState('');
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const { list } = useSelector((state: RootState) => state.todoList);
 
@@ -47,10 +50,13 @@ export default function TodoListPage() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('ac');
+
     axios
       .get<{ message: string; result: TodoList }>(
         'http://localhost:8000/todo',
         // 'https://jsonplaceholder.typicode.com/todos?_limit=j',
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(res => {
         if ((res.data.message = 'SUCCESS')) {
@@ -66,16 +72,23 @@ export default function TodoListPage() {
           dispatch(setList(newData));
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.log(err);
+        if (err.response.data.result.message === 'INVALID_TOKEN') {
+          navigate('/uiChallenge/textInput');
+        }
+      });
   }, []);
 
   const addTodo = () => {
     const body = { text: userInput };
+    const token = localStorage.getItem('ac');
 
     axios
       .post<{ message: string; result: TodoData }>(
         'http://localhost:8000/todo',
         body,
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(res => {
         if (res.data.message === 'SUCCESS') {
@@ -93,8 +106,12 @@ export default function TodoListPage() {
   };
 
   const handleClickDelete = (id: string) => {
+    const token = localStorage.getItem('ac');
+
     axios
-      .delete<{ message: string }>(`http://localhost:8000/todo/${id}`)
+      .delete<{ message: string }>(`http://localhost:8000/todo/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(res => {
         if (res.data.message === 'SUCCESS') {
           dispatch(deleteTodo(id));
@@ -104,10 +121,13 @@ export default function TodoListPage() {
   };
 
   const handleClickDone = ({ id, text, done, created_at }: TodoData) => {
+    const token = localStorage.getItem('ac');
+
     axios
       .patch<{ message: string; result: TodoData }>(
         `http://localhost:8000/todo/${id}`,
         { done: !done },
+        { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(res => {
         if ((res.data.message = 'SUCCESS')) {
@@ -118,10 +138,14 @@ export default function TodoListPage() {
   };
 
   const handleClickClear = () => {
+    const token = localStorage.getItem('ac');
+
     dispatch(
       setOnConfirmModal(() => {
         axios
-          .delete<{ message: string }>('http://localhost:8000/todo/all')
+          .delete<{ message: string }>('http://localhost:8000/todo/all', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
           .then(res => {
             if (res.data.message === 'SUCCESS') {
               dispatch(setList([]));
@@ -163,6 +187,7 @@ export default function TodoListPage() {
             </Button>
           </div>
           <div css={todoListWrapperCss}>
+            {/* @ts-ignore */}
             {list.map(({ id, text, done }) => (
               <Todo
                 key={id}
