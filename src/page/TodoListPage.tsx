@@ -2,20 +2,16 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
-import { TodoData, TodoList } from '../types/Todo.type';
-import Button from '../components/totoList/Button';
-import { AiOutlinePlus } from 'react-icons/ai';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   addTodoList,
   deleteTodo,
   setList,
-  toggleDone,
   updateTodo,
 } from '../redux/slice/todoListSlice';
-import { RootState } from '../redux/store';
-import Todo from '../components/totoList/Todo';
 import {
   resetModal,
   setContentModal,
@@ -23,14 +19,12 @@ import {
   setOnConfirmModal,
   setTitleModal,
 } from '../redux/slice/layoutSilce';
-import { useNavigate } from 'react-router-dom';
+import { RootState } from '../redux/store';
 
-// interface TodoFromServer {
-//   userId: number;
-//   id: number;
-//   title: string;
-//   completed: boolean;
-// }
+import Button from '../components/totoList/Button';
+import Todo from '../components/totoList/Todo';
+import { AiOutlinePlus } from 'react-icons/ai';
+import { TodoData, TodoList } from '../types/Todo.type';
 
 export default function TodoListPage() {
   const [userInput, setUserInput] = useState('');
@@ -43,7 +37,7 @@ export default function TodoListPage() {
     return () => {
       dispatch(resetModal());
     };
-  }, []);
+  }, [dispatch]);
 
   const handleChnageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(e.target.value);
@@ -55,11 +49,10 @@ export default function TodoListPage() {
     axios
       .get<{ message: string; result: TodoList }>(
         'http://localhost:8000/todo',
-        // 'https://jsonplaceholder.typicode.com/todos?_limit=j',
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then(res => {
-        if ((res.data.message = 'SUCCESS')) {
+        if (res.data && (res.data.message = 'SUCCESS')) {
           const newData = res.data.result.map(
             ({ id, text, done, created_at }) => ({
               id: String(id),
@@ -74,11 +67,14 @@ export default function TodoListPage() {
       })
       .catch(err => {
         console.log(err);
-        if (err.response.data.result.message === 'INVALID_TOKEN') {
+        if (
+          err.response &&
+          err.response.data.result.message === 'INVALID_TOKEN'
+        ) {
           navigate('/uiChallenge/textInput');
         }
       });
-  }, []);
+  }, [dispatch, navigate]);
 
   const addTodo = () => {
     const body = { text: userInput };

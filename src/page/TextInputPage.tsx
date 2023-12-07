@@ -2,48 +2,70 @@
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { SHA256 } from 'crypto-js';
+import axios from 'axios';
 
 import Title from '../components/common/Title';
 import Column from '../components/common/Column';
 import TextInput from '../components/uiChallenge/TextInput';
 import Button from '../components/uiChallenge/Button';
 import { rEmail } from '../util/reg';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { SHA256 } from 'crypto-js';
+import { setIsShowModal, setModal } from '../redux/slice/layoutSilce';
+import { useNavigate } from 'react-router-dom';
 
 export default function TextInputPage() {
-  console.log(SHA256('test').toString());
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [signupUserInput, setSignupUserInput] = useState({
     id: { value: '', description: '' },
     pw: { value: '', description: '' },
   });
 
-  const [{ id, pw }, setUserInput] = useState({
+  const [userInput, setUserInput] = useState({
     id: { value: '', description: '' },
     pw: { value: '', description: '' },
   });
 
+  // 인풋창 초기화
   useEffect(() => {
-    // if (id.value.length > 0)
-    // setUserInput(prev => ({ ...prev, id: { ...prev.id, description: '' } }));
-  }, [id.value]);
+    if (userInput.id.value.length > 0)
+      setUserInput(prev => ({ ...prev, id: { ...prev.id, description: '' } }));
+  }, [userInput.id.value]);
 
   useEffect(() => {
-    // if (pw.value.length > 0)
-    // setUserInput(prev => ({ ...prev, pw: { ...prev.pw, description: '' } }));
-  }, [pw.value]);
+    if (userInput.pw.value.length > 0)
+      setUserInput(prev => ({ ...prev, pw: { ...prev.pw, description: '' } }));
+  }, [userInput.pw.value]);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (signupUserInput.id.value.length > 0)
+      setSignupUserInput(prev => ({
+        ...prev,
+        id: { ...prev.id, description: '' },
+      }));
+  }, [signupUserInput.id.value]);
 
+  useEffect(() => {
+    if (signupUserInput.pw.value.length > 0)
+      setSignupUserInput(prev => ({
+        ...prev,
+        pw: { ...prev.pw, description: '' },
+      }));
+  }, [signupUserInput.pw.value]);
+
+  // 이벤트 핸들러
   const handleClickSignup = () => {
-    // email 유효성검사
+    if (rEmail.test(signupUserInput.id.value) === false)
+      return setSignupUserInput(prev => ({
+        ...prev,
+        id: { ...prev.id, description: '이메일 형식이 아닙니다' },
+      }));
 
     axios
       .post('http://localhost:8000/signup', {
-        email: signupUserInput.id,
-        password: SHA256(signupUserInput.pw.value),
+        email: signupUserInput.id.value,
+        password: SHA256(signupUserInput.pw.value).toString(),
       })
       .then(res => {
         if (res.data.result.message === 'SUCCESS') {
@@ -54,47 +76,51 @@ export default function TextInputPage() {
   };
 
   const hnadleClickLogin = () => {
-    // if (rEmail.test(id.value) === false)
-    //   return setUserInput(prev => ({
-    //     ...prev,
-    //     id: { ...prev.id, description: '이메일 형식이 아닙니다' },
-    //   }));
-
-    // if (pw.value.length < 4)
-    //   return setUserInput(prev => ({
-    //     ...prev,
-    //     pw: { ...prev.pw, description: '비밀번호가 잘못되었습니다.' },
-    //   }));
-
-    if (!rEmail.test(id.value)) {
-      console.log('이메일 양식이 잘못되었습니다.');
-    }
+    if (rEmail.test(userInput.id.value) === false)
+      return setUserInput(prev => ({
+        ...prev,
+        id: { ...prev.id, description: '이메일 형식이 아닙니다' },
+      }));
 
     axios
-      .post('http://localhost:8000/signin', { email: id, password: pw })
+      .post('http://localhost:8000/signin', {
+        email: userInput.id.value,
+        password: SHA256(userInput.pw.value).toString(),
+      })
       .then(res => {
         if (res.data.result.message === 'SUCCESS') {
           localStorage.setItem('ac', res.data.result.accessToken);
           console.log('로그인 완료!');
+
+          return dispatch(
+            setModal({
+              title: '[로그인 성공]',
+              content: '로그인에 성공하였습니다.',
+              onConfirm: () => {
+                dispatch(setIsShowModal(false));
+                navigate('/service/todoList');
+              },
+            }),
+          );
         }
       })
       .catch(err => console.error(err));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // if (id.value && pw.value && e.key === 'Enter') {
-    //   hnadleClickLogin();
-    // }
+    if (userInput.id.value && userInput.pw.value && e.key === 'Enter') {
+      hnadleClickLogin();
+    }
   };
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserInput(prev => ({ ...prev, [name]: value }));
+    setUserInput(prev => ({ ...prev, [name]: { ...prev, value } }));
   };
 
   const handleChangeSignupInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setSignupUserInput(prev => ({ ...prev, [name]: value }));
+    setSignupUserInput(prev => ({ ...prev, [name]: { ...prev, value } }));
   };
 
   return (
@@ -130,7 +156,7 @@ export default function TextInputPage() {
             </Column>
 
             <Button
-              // disabled={!signupUserInput.id.value || !signupUserInput.pw.value}
+              disabled={!signupUserInput.id.value || !signupUserInput.pw.value}
               onClick={handleClickSignup}
             >
               회원가입
@@ -145,27 +171,27 @@ export default function TextInputPage() {
               <TextInput
                 name="id"
                 label="아이디"
-                value={id.value}
+                value={userInput.id.value}
                 // disabled
                 placeholder="Email"
-                description={id.description}
+                description={userInput.id.description}
                 onChange={handleChangeInput}
               />
               <TextInput
                 name="pw"
                 label="비밀번호"
                 type="password"
-                value={pw.value}
+                value={userInput.pw.value}
                 placeholder="Password"
                 // disabled
-                description={pw.description}
+                description={userInput.pw.description}
                 onChange={handleChangeInput}
                 onKeyDown={handleKeyDown}
               />
             </Column>
 
             <Button
-              // disabled={!id.value || !pw.value}
+              disabled={!userInput.id.value || !userInput.pw.value}
               onClick={hnadleClickLogin}
             >
               로그인

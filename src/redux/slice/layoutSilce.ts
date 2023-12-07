@@ -22,6 +22,15 @@ const modalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
+    setModal: (state, action: PayloadAction<Partial<ModalState['modal']>>) => {
+      state.modal = {
+        isShow: true,
+        title: action.payload.title || '',
+        content: action.payload.content || '',
+        onConfirm: action.payload.onConfirm || undefined,
+      };
+    },
+
     setIsShowModal(state, action: PayloadAction<boolean>) {
       state.modal.isShow = action.payload;
     },
@@ -47,6 +56,7 @@ const modalSlice = createSlice({
 });
 
 export const {
+  setModal,
   setIsShowModal,
   setContentModal,
   setTitleModal,
