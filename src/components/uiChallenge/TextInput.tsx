@@ -6,24 +6,30 @@ export type InputType = 'text' | 'password';
 
 interface InputProps {
   id: string;
+  name: string;
+  value: string;
   type: InputType;
-  label: string;
+  label?: string;
+  disabled?: boolean;
   placeHolder?: string;
   message?: string;
-  inputError: boolean;
-  handleKeyDown: (e: any) => void;
-  handleGetValue: (e: any) => void;
+  // inputError: boolean;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 export default function Input({
   id,
-  type,
+  name,
+  value,
+  type = 'text',
   label,
+  disabled = false,
   placeHolder,
-  message,
-  inputError,
-  handleKeyDown,
-  handleGetValue,
+  message = '',
+  // inputError,
+  onKeyDown,
+  onChange,
 }: InputProps) {
   return (
     <div css={inputWrapCss}>
@@ -31,14 +37,17 @@ export default function Input({
         {label}
       </label>
       <input
-        css={inputCss(inputError)}
-        type={type}
         id={id}
+        css={inputCss(message)}
+        type={type}
+        value={value}
+        name={name}
+        disabled={disabled}
         placeholder={placeHolder}
-        onKeyDown={handleKeyDown}
-        onChange={handleGetValue}
+        onKeyDown={onKeyDown}
+        onChange={onChange}
       />
-      {message !== '' && <p>{message}</p>}
+      {message && <p>{message}</p>}
     </div>
   );
 }
@@ -52,9 +61,9 @@ const labelCss = css`
   margin-bottom: 8px;
 `;
 
-const inputCss = (inputError: boolean) => css`
+const inputCss = (message: string) => css`
   font-size: 16px;
   padding: 7px;
-  border: 1px solid ${inputError ? 'red' : '#555'};
+  border: 1px solid ${message ? 'red' : '#555'};
   outline: none;
 `;
