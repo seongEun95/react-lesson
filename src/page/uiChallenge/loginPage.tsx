@@ -3,13 +3,22 @@
 import { jsx, css } from '@emotion/react';
 import ButtonChallenge from '../../components/uiChallenge/Button';
 import Input from '../../components/uiChallenge/TextInput';
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { rEmail } from '../../util/regexp';
 import { SHA256 } from 'crypto-js';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import {
+  confirmModal,
+  contentChangeModal,
+  showModal,
+  titleChangeModal,
+} from '../../redux/slice/modalSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
-  // id값과 비밀번호값의 상태
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [signupUserInput, setSignupUserInput] = useState({
     id: { value: '', message: '' },
@@ -71,7 +80,7 @@ export default function LoginPage() {
     axios
       .post('/signup', {
         email: signupUserInput.id.value,
-        password: SHA256(signupUserInput.id.value).toString(),
+        password: SHA256(signupUserInput.pw.value).toString(),
       })
       .then(res => {
         if (res.data.result.message === 'SUCCESS') {
@@ -96,11 +105,22 @@ export default function LoginPage() {
       .post('/signin', {
         email: loginUserInput.id.value,
         password: SHA256(loginUserInput.pw.value).toString(),
-        // password: loginUserInput.pw.value,
       })
       .then(res => {
         if (res.data.result.message === 'SUCCESS') {
+          localStorage.setItem('ac', res.data.result.accessToken);
           console.log('로그인 완료');
+
+          dispatch(
+            confirmModal(() => {
+              navigate('/todoList');
+              dispatch(showModal(true));
+            }),
+          );
+
+          dispatch(titleChangeModal('로그인 완료'));
+          dispatch(contentChangeModal('로그인이 완료되었습니다.'));
+          dispatch(showModal(true));
         }
       })
       .catch(err => {

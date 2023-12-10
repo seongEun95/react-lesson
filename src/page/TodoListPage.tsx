@@ -41,8 +41,12 @@ export default function TodoListPage() {
   };
 
   const getData = () => {
+    const token = localStorage.getItem('ac');
+
     axios
-      .get<{ message: string; result: TodoList }>('/todo')
+      .get<{ message: string; result: TodoList }>('/todo', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(res => {
         if (res.data.message === 'SUCCESS') {
           const newData = res.data.result.map(
