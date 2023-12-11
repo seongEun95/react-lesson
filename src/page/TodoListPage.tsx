@@ -90,9 +90,12 @@ export default function TodoListPage() {
     }
 
     const body = { text: userInput };
+    const token = localStorage.getItem('ac');
 
     axios //
-      .post<{ message: string; result: TodoData }>('/todo', body)
+      .post<{ message: string; result: TodoData }>('/todo', body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(res => {
         if (res.data.message === 'SUCCESS') {
           dispatch(addTodoList(res.data.result));
@@ -113,10 +116,13 @@ export default function TodoListPage() {
 
   // 완료 함수
   const handleClickDone = ({ id, text, done, created_at }: TodoData) => {
+    const token = localStorage.getItem('ac');
     axios //
-      .patch<{ message: string; result: TodoData }>(`/todo/${id}`, {
-        done: !done,
-      })
+      .patch<{ message: string; result: TodoData }>(
+        `/todo/${id}`,
+        { done: !done },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
       .then(res => {
         if (res.data.message === 'SUCCESS') {
           dispatch(updateTodo({ id, text, done: !done, created_at }));
@@ -129,8 +135,12 @@ export default function TodoListPage() {
 
   // 삭제 함수
   const handleClickDelete = (id: string) => {
+    const token = localStorage.getItem('ac');
+
     axios //
-      .delete<{ message: string; result: TodoData }>(`/todo/${id}`)
+      .delete<{ message: string; result: TodoData }>(`/todo/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(res => {
         if (res.data.message === 'SUCCESS') {
           dispatch(deleteTodo(id));
@@ -143,8 +153,12 @@ export default function TodoListPage() {
 
   // 초기화 함수
   const handleClickClearBtn = () => {
+    const token = localStorage.getItem('ac');
+
     axios //
-      .delete<{ message: string }>('/todo/all')
+      .delete<{ message: string }>('/todo/all', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(res => {
         if (res.data.message === 'SUCCESS') {
           dispatch(
