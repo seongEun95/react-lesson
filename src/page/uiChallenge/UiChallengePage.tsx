@@ -16,6 +16,7 @@ export default function UiChallengePage() {
             <Link to="/ui/modal">모달창</Link>
             <Link to="/ui/dropdown">드랍다운</Link>
             <Link to="/ui/login">로그인</Link>
+            <Link to="/ui/tooltip">툴팁</Link>
           </li>
         </ul>
       </div>
