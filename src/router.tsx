@@ -10,12 +10,15 @@ import ButtonPage from './page/uiChallenge/ButtonPage';
 import CheckBoxPage from './page/uiChallenge/CheckBoxPage';
 import ModalPage from './page/uiChallenge/ModalPage';
 import HomeworkPage from './page/homework/HomeworkPage';
-import { Modal } from './components/uiChallComp/Modal';
+import { Modal } from './components/uiChallenge/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 import { showModal } from './redux/slice/modalSlice';
 import StarbucksPage from './page/homework/StarbucksPage';
 import StarbucksDetailpage from './page/homework/StarbucksDetailPage';
+import DropdownPage from './page/uiChallenge/DropdownPage';
+import LoginPage from './page/uiChallenge/loginPage';
+import TooltipPage from './page/uiChallenge/TooltipPage';
 
 export default function Router() {
   const dispatch = useDispatch();
@@ -71,6 +74,9 @@ export default function Router() {
           <Route path="button" element={<ButtonPage />} />
           <Route path="checkbox" element={<CheckBoxPage />} />
           <Route path="modal" element={<ModalPage />} />
+          <Route path="dropdown" element={<DropdownPage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="tooltip" element={<TooltipPage />} />
         </Route>
         <Route path="/homework" element={<HomeworkPage />}>
           <Route path="starbucks" element={<StarbucksPage />} />

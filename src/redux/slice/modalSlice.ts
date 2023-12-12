@@ -34,9 +34,19 @@ const modalSlice = createSlice({
     confirmModal(state, action: PayloadAction<() => void>) {
       state.modal.onConfirm = action.payload;
     },
+    resetModal(state) {
+      state.modal.isShow = false;
+      state.modal.content = '';
+      state.modal.onConfirm = undefined;
+    },
   },
 });
 
-export const { showModal, titleChangeModal, contentChangeModal, confirmModal } =
-  modalSlice.actions;
+export const {
+  showModal,
+  titleChangeModal,
+  contentChangeModal,
+  confirmModal,
+  resetModal,
+} = modalSlice.actions;
 export default modalSlice.reducer;

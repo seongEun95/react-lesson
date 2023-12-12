@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import Dropdown from '../../components/uiChallComp/Dropdown';
+import Dropdown from '../../components/uiChallenge/Dropdown';
 
 export default function DropdownPage() {
   return (

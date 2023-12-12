@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx, css } from '@emotion/react';
-import Checkbox from '../../components/uiChallComp/CheckBox';
+import Checkbox from '../../components/uiChallenge/CheckBox';
 
 export default function ButtonPage() {
   const handleConsole = (e: React.MouseEvent<HTMLInputElement>) => {

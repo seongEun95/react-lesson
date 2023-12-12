@@ -34,7 +34,7 @@ const todoListSlice = createSlice({
 
     updateTodo(state, action: PayloadAction<TodoData>) {
       state.list = state.list.map(todo =>
-        todo.id === action.payload.id ? action.payload : todo,
+        todo.id === String(action.payload.id) ? action.payload : todo,
       );
     },
 

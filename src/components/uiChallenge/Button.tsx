@@ -117,6 +117,7 @@ const commonCss = () => css`
   box-sizing: border-box;
   max-width: 220px;
   width: 100%;
+  margin: 0 auto;
   font-size: 18px;
   border: none;
   cursor: pointer;
