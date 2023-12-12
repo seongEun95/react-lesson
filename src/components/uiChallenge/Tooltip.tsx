@@ -23,6 +23,7 @@ export default function Tooltip({
   const handleMouseLeave = () => {
     setIsShow(false);
   };
+
   return (
     <div
       css={tooltipWrapCss}
@@ -51,6 +52,7 @@ const tooltipContentCss = (width: string) => css`
   line-height: 1.5;
   color: #fff;
   background: #333;
+
   &::after {
     content: '';
     display: block;
